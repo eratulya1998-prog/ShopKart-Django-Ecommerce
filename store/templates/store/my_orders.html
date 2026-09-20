@@ -1,0 +1,213 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders | ShopKart</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<header class="shop-navbar">
+
+    <div class="shop-logo">
+        🛒 Shop<span>Kart</span>
+    </div>
+
+    <nav class="shop-nav">
+
+        <a href="{% url 'store:home' %}">
+            🏠 Home
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            🛒 Cart
+        </a>
+
+        <a href="{% url 'store:my_orders' %}">
+            📦 My Orders
+        </a>
+
+        <span class="welcome-user">
+            👤 {{ user.username }}
+        </span>
+
+        <a href="{% url 'store:logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="orders-container">
+
+    <div class="orders-header">
+
+        <span>
+            SHOPKART
+        </span>
+
+        <h1>
+            My Orders
+        </h1>
+
+        <p>
+            View your order history and purchase details.
+        </p>
+
+    </div>
+
+
+    {% if orders %}
+
+        <div class="orders-list">
+
+            {% for order in orders %}
+
+                <div class="order-card">
+
+                    <div class="order-card-header">
+
+                        <div>
+
+                            <span class="order-label">
+                                Order
+                            </span>
+
+                            <h2>
+                                #{{ order.id }}
+                            </h2>
+
+                        </div>
+
+
+                        <span class="order-status">
+                            {{ order.status }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-card-info">
+
+                        <div>
+                            <span>Date</span>
+
+                            <strong>
+                                {{ order.created_at|date:"d M Y, h:i A" }}
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <span>Total</span>
+
+                            <strong>
+                                ₹{{ order.total_amount }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    {% if order.items.all %}
+
+                        <div class="order-products">
+
+                            {% for item in order.items.all %}
+
+                                <div class="order-product">
+
+                                    <span>
+                                        {{ item.product.name }}
+                                    </span>
+
+                                    <span>
+                                        Qty: {{ item.quantity }}
+                                    </span>
+
+                                    <strong>
+                                        ₹{{ item.price }}
+                                    </strong>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-orders">
+
+            <div class="no-orders-icon">
+                📦
+            </div>
+
+            <h2>
+                No Orders Yet
+            </h2>
+
+            <p>
+                You haven't placed any orders yet.
+            </p>
+
+            <a
+                href="{% url 'store:home' %}"
+                class="success-btn"
+            >
+                Start Shopping
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+
+<footer class="shop-footer">
+
+    <div class="footer-brand">
+
+        <h2>
+            🛒 Shop<span>Kart</span>
+        </h2>
+
+        <p>
+            Your one-stop destination for
+            quality products at great prices.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<div class="copyright">
+    © 2026 ShopKart. All rights reserved.
+</div>
+
+</body>
+</html>

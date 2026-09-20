@@ -1,0 +1,299 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout | ShopKart</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+<header class="shop-navbar">
+
+    <div class="shop-logo">
+        🛒 Shop<span>Kart</span>
+    </div>
+
+    <nav class="shop-nav">
+
+        <a href="{% url 'store:home' %}">
+            🏠 Home
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            🛒 Cart
+        </a>
+
+        <a href="{% url 'store:my_orders' %}">
+            📦 My Orders
+        </a>
+
+        <span class="welcome-user">
+            👤 {{ user.username }}
+        </span>
+
+        <a href="{% url 'store:logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="checkout-container">
+
+    <div class="checkout-header">
+
+        <span>
+            SHOPKART
+        </span>
+
+        <h1>
+            Checkout
+        </h1>
+
+        <p>
+            Enter your delivery details and review your order.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="checkout-layout">
+
+
+            <!-- =========================
+                 DELIVERY DETAILS
+            ========================== -->
+
+            <section class="checkout-items">
+
+                <h2>
+                    Delivery Address
+                </h2>
+
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        <div class="message">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+
+                <div class="checkout-form">
+
+                    <label for="phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        maxlength="15"
+                        required
+                    >
+
+
+                    <label for="address">
+                        Full Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        name="address"
+                        rows="4"
+                        placeholder="House/Flat No., Street, Area"
+                        required
+                    ></textarea>
+
+
+                    <div class="form-row">
+
+                        <div>
+
+                            <label for="city">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                placeholder="City"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div>
+
+                            <label for="state">
+                                State
+                            </label>
+
+                            <input
+                                type="text"
+                                id="state"
+                                name="state"
+                                placeholder="State"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <label for="pincode">
+                        PIN Code
+                    </label>
+
+                    <input
+                        type="text"
+                        id="pincode"
+                        name="pincode"
+                        placeholder="6-digit PIN code"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        required
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 ORDER SUMMARY
+            ========================== -->
+
+            <aside class="checkout-summary">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                {% for item in cart_items %}
+
+                    <div class="checkout-row">
+
+                        <span>
+                            {{ item.product.name }}
+                            × {{ item.quantity }}
+                        </span>
+
+                        <span>
+                            ₹{{ item.subtotal }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <div class="checkout-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span class="free">
+                        FREE
+                    </span>
+
+                </div>
+
+
+                <div class="checkout-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₹{{ total }}
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="place-order-btn"
+                >
+                    🛍️ Place Order
+                </button>
+
+
+                <a
+                    href="{% url 'store:cart' %}"
+                    class="back-cart"
+                >
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </div>
+
+    </form>
+
+</main>
+
+
+<footer class="shop-footer">
+
+    <div class="footer-brand">
+
+        <h2>
+            🛒 Shop<span>Kart</span>
+        </h2>
+
+        <p>
+            Your one-stop destination for
+            quality products at great prices.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<div class="copyright">
+
+    © 2026 ShopKart. All rights reserved.
+
+</div>
+
+</body>
+</html>

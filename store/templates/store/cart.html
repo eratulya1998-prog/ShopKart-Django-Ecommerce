@@ -1,0 +1,348 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shopping Cart | CodeAlpha Store</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+</head>
+
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            CodeAlpha Store
+        </div>
+
+        <nav>
+
+            <a href="{% url 'store:home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'store:home' %}#products">
+                Products
+            </a>
+
+            <a href="{% url 'store:cart' %}">
+                🛒 Cart
+            </a>
+
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'store:my_orders' %}">
+                    📦 My Orders
+                </a>
+
+                <span class="user-name">
+                    👤 {{ user.username }}
+                </span>
+
+                <a href="{% url 'store:logout' %}">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'store:login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'store:register' %}">
+                    Register
+                </a>
+
+            {% endif %}
+
+
+            <a href="/admin/">
+                Admin
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =========================
+         SHOPPING CART
+    ========================== -->
+
+    <main class="cart-container">
+
+        <h1>
+            Shopping Cart
+        </h1>
+
+
+        <!-- Messages -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% if cart_items %}
+
+            <div class="cart-layout">
+
+
+                <!-- =========================
+                     CART ITEMS
+                ========================== -->
+
+                <section class="cart-items">
+
+                    {% for item in cart_items %}
+
+                        <div class="cart-item">
+
+
+                            <!-- Product Image -->
+
+                            <div>
+
+                                {% if item.product.image %}
+
+                                    <img
+                                        src="{{ item.product.image }}"
+                                        alt="{{ item.product.name }}"
+                                    >
+
+                                {% else %}
+
+                                    <div class="cart-image">
+                                        No Image
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Product Information -->
+
+                            <div class="cart-product">
+
+                                <span class="category">
+                                    {{ item.product.category.name }}
+                                </span>
+
+                                <h3>
+                                    {{ item.product.name }}
+                                </h3>
+
+                                <p>
+                                    Price:
+                                    <strong>
+                                        ₹{{ item.product.price }}
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Quantity:
+                                    <strong>
+                                        {{ item.quantity }}
+                                    </strong>
+                                </p>
+
+                            </div>
+
+
+                            <!-- Subtotal -->
+
+                            <div class="cart-subtotal">
+
+                                <strong>
+                                    ₹{{ item.subtotal }}
+                                </strong>
+
+                                <a
+                                    href="{% url 'store:remove_from_cart' item.product.id %}"
+                                    class="remove-btn"
+                                >
+                                    Remove
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </section>
+
+
+                <!-- =========================
+                     ORDER SUMMARY
+                ========================== -->
+
+                <aside class="cart-summary">
+
+                    <h2>
+                        Order Summary
+                    </h2>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Items
+                        </span>
+
+                        <span>
+                            {{ cart_items|length }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <span>
+                            ₹{{ total }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <span>
+                            FREE
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            ₹{{ total }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- Checkout -->
+
+                    {% if user.is_authenticated %}
+
+                        <a
+                            href="{% url 'store:checkout' %}"
+                            class="checkout-btn"
+                        >
+                            Proceed to Checkout
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'store:login' %}?next={% url 'store:checkout' %}"
+                            class="checkout-btn"
+                        >
+                            Login to Checkout
+                        </a>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'store:home' %}"
+                        class="continue-shopping"
+                    >
+                        ← Continue Shopping
+                    </a>
+
+                </aside>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =========================
+                 EMPTY CART
+            ========================== -->
+
+            <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
+
+                <h2>
+                    Your cart is empty
+                </h2>
+
+                <p>
+                    You haven't added any products yet.
+                </p>
+
+                <a
+                    href="{% url 'store:home' %}"
+                    class="btn"
+                >
+                    Continue Shopping
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 CodeAlpha Store. All rights reserved.
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

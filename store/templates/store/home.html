@@ -1,0 +1,859 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ShopKart | Online Shopping</title>
+
+    <meta
+        name="description"
+        content="ShopKart - Shop electronics, fashion, accessories and more."
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     TOP BAR
+========================== -->
+
+<div class="top-bar">
+
+    <div>
+        🚚 Free Shipping on orders above ₹999
+    </div>
+
+    <div class="top-links">
+        <span>Help</span>
+        <span>|</span>
+        <span>Track Order</span>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     NAVBAR
+========================== -->
+
+<header class="shop-navbar">
+
+    <div class="shop-logo">
+
+        <span class="logo-icon">
+            🛒
+        </span>
+
+        <span>
+            Shop<span>Kart</span>
+        </span>
+
+    </div>
+
+
+    <!-- FUNCTIONAL SEARCH -->
+
+    <form
+        method="GET"
+        action="{% url 'store:home' %}"
+        class="search-box"
+    >
+
+        <input
+            type="text"
+            name="q"
+            value="{{ search_query }}"
+            placeholder="Search for products, brands and more..."
+            autocomplete="off"
+        >
+
+        <button type="submit">
+            🔍
+        </button>
+
+    </form>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="shop-nav">
+
+        <a href="{% url 'store:home' %}">
+            🏠 Home
+        </a>
+
+        <a href="#products">
+            📦 Products
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            🛒 Cart
+        </a>
+
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'store:my_orders' %}">
+                📋 My Orders
+            </a>
+
+            <span class="welcome-user">
+                👤 {{ user.username }}
+            </span>
+
+            <a href="{% url 'store:logout' %}">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'store:login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'store:register' %}">
+                Register
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     HERO SECTION
+========================== -->
+
+<section class="shop-hero">
+
+    <div class="hero-content">
+
+        <span class="hero-small-title">
+            BEST DEALS FOR YOU
+        </span>
+
+        <h1>
+            Upgrade Your
+            <span>Lifestyle</span>
+        </h1>
+
+        <p>
+            Shop the latest electronics, fashion,
+            accessories and more at amazing prices.
+        </p>
+
+        <p class="hero-subtext">
+            Quality products • Fast delivery • Secure shopping
+        </p>
+
+        <a
+            href="#products"
+            class="hero-shop-btn"
+        >
+            Shop Now →
+        </a>
+
+    </div>
+
+
+    <div class="hero-visual">
+
+        <div class="hero-circle"></div>
+
+        <div class="hero-product">
+            💻
+        </div>
+
+        <div class="hero-headphone">
+            🎧
+        </div>
+
+        <div class="hero-watch">
+            ⌚
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SERVICE FEATURES
+========================== -->
+
+<section class="service-section">
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            🚚
+        </div>
+
+        <div>
+
+            <strong>
+                Free Shipping
+            </strong>
+
+            <p>
+                On orders above ₹999
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            🛡️
+        </div>
+
+        <div>
+
+            <strong>
+                Secure Payment
+            </strong>
+
+            <p>
+                100% secure payments
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            🔄
+        </div>
+
+        <div>
+
+            <strong>
+                Easy Returns
+            </strong>
+
+            <p>
+                7 days return policy
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            🎧
+        </div>
+
+        <div>
+
+            <strong>
+                24/7 Support
+            </strong>
+
+            <p>
+                We're here to help
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PRODUCTS
+========================== -->
+
+<section
+    class="shop-products"
+    id="products"
+>
+
+
+    <div class="section-heading">
+
+        <div>
+
+            <span>
+                {% if search_query %}
+                    SEARCH RESULTS
+                {% elif selected_category %}
+                    CATEGORY PRODUCTS
+                {% else %}
+                    SHOP THE BEST
+                {% endif %}
+            </span>
+
+            <h2>
+
+                {% if search_query %}
+
+                    Results for "{{ search_query }}"
+
+                {% elif selected_category %}
+
+                    {% for category in categories %}
+
+                        {% if category.slug == selected_category %}
+                            {{ category.name }}
+                        {% endif %}
+
+                    {% endfor %}
+
+                {% else %}
+
+                    Featured Products
+
+                {% endif %}
+
+            </h2>
+
+        </div>
+
+
+        {% if search_query or selected_category %}
+
+            <a href="{% url 'store:home' %}">
+                View All Products →
+            </a>
+
+        {% else %}
+
+            <a href="#products">
+                View All Products →
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ACTIVE FILTER -->
+
+    {% if search_query or selected_category %}
+
+    <div class="active-filter">
+
+        {% if search_query %}
+
+            <span>
+                🔎 Search: <strong>{{ search_query }}</strong>
+            </span>
+
+        {% endif %}
+
+        {% if selected_category %}
+
+            <span>
+                📂 Category selected
+            </span>
+
+        {% endif %}
+
+        <a href="{% url 'store:home' %}">
+            ✕ Clear Filter
+        </a>
+
+    </div>
+
+    {% endif %}
+
+
+    <div class="shop-product-grid">
+
+
+        {% for product in products %}
+
+
+        <article class="shop-product-card">
+
+
+            <!-- Product Image -->
+
+            <div class="shop-product-image">
+
+                {% if forloop.first %}
+
+                    <span class="new-badge">
+                        New
+                    </span>
+
+                {% endif %}
+
+
+                {% if product.image %}
+
+                    <img
+                        src="{{ product.image }}"
+                        alt="{{ product.name }}"
+                    >
+
+                {% else %}
+
+                    <div class="product-placeholder">
+
+                        {% if "headphone" in product.name|lower %}
+
+                            🎧
+
+                        {% elif "watch" in product.name|lower %}
+
+                            ⌚
+
+                        {% elif "shoe" in product.name|lower %}
+
+                            👟
+
+                        {% elif "backpack" in product.name|lower %}
+
+                            🎒
+
+                        {% elif "speaker" in product.name|lower %}
+
+                            🔊
+
+                        {% elif "glass" in product.name|lower %}
+
+                            🕶️
+
+                        {% elif "laptop" in product.name|lower %}
+
+                            💻
+
+                        {% elif "phone" in product.name|lower %}
+
+                            📱
+
+                        {% elif "mobile" in product.name|lower %}
+
+                            📱
+
+                        {% else %}
+
+                            🛍️
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Product Information -->
+
+            <div class="shop-product-info">
+
+                <span class="product-category">
+                    {{ product.category.name }}
+                </span>
+
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+
+                <div class="rating">
+
+                    <span>
+                        ★★★★★
+                    </span>
+
+                    <small>
+                        4.5
+                    </small>
+
+                </div>
+
+
+                <!-- STOCK -->
+
+                {% if product.stock > 0 %}
+
+                    {% if product.stock <= 5 %}
+
+                        <small class="stock-warning">
+                            Only {{ product.stock }} left
+                        </small>
+
+                    {% else %}
+
+                        <small class="stock-available">
+                            In Stock
+                        </small>
+
+                    {% endif %}
+
+                {% endif %}
+
+
+                <div class="shop-product-bottom">
+
+                    <strong class="shop-price">
+                        ₹{{ product.price }}
+                    </strong>
+
+                    {% if product.stock > 0 %}
+
+                        <a
+                            href="{% url 'store:add_to_cart' product.id %}"
+                            class="add-cart-btn"
+                        >
+                            🛒 Add to Cart
+                        </a>
+
+                    {% else %}
+
+                        <span class="out-of-stock">
+                            Out of Stock
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <a
+                    href="{% url 'store:product_detail' product.slug %}"
+                    class="view-product"
+                >
+                    View Details
+                </a>
+
+            </div>
+
+        </article>
+
+
+        {% empty %}
+
+
+        <div class="empty">
+
+            <h3>
+                No products found
+            </h3>
+
+            {% if search_query %}
+
+                <p>
+                    No products matched
+                    "<strong>{{ search_query }}</strong>".
+                </p>
+
+            {% elif selected_category %}
+
+                <p>
+                    No products are available in this category.
+                </p>
+
+            {% else %}
+
+                <p>
+                    Add products from the Django admin panel.
+                </p>
+
+            {% endif %}
+
+            <a
+                href="{% url 'store:home' %}"
+                class="hero-shop-btn"
+            >
+                View All Products
+            </a>
+
+        </div>
+
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CATEGORIES
+========================== -->
+
+<section class="category-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span>
+                EXPLORE
+            </span>
+
+            <h2>
+                Shop by Category
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="category-grid">
+
+
+        <!-- ALL PRODUCTS -->
+
+        <a
+            href="{% url 'store:home' %}"
+            class="category-card"
+        >
+
+            <div>
+                🛍️
+            </div>
+
+            <strong>
+                All Products
+            </strong>
+
+        </a>
+
+
+        <!-- DYNAMIC CATEGORIES -->
+
+        {% for category in categories %}
+
+        <a
+            href="{% url 'store:home' %}?category={{ category.slug }}#products"
+            class="category-card"
+        >
+
+            <div>
+
+                {% if "electronic" in category.name|lower %}
+
+                    💻
+
+                {% elif "fashion" in category.name|lower %}
+
+                    👕
+
+                {% elif "accessor" in category.name|lower %}
+
+                    🎒
+
+                {% elif "home" in category.name|lower %}
+
+                    🏠
+
+                {% elif "mobile" in category.name|lower %}
+
+                    📱
+
+                {% elif "gaming" in category.name|lower %}
+
+                    🎮
+
+                {% else %}
+
+                    🛍️
+
+                {% endif %}
+
+            </div>
+
+            <strong>
+                {{ category.name }}
+            </strong>
+
+        </a>
+
+        {% empty %}
+
+            <p>
+                No categories available.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     NEWSLETTER
+========================== -->
+
+<section class="newsletter">
+
+    <div>
+
+        <h2>
+            Stay Updated with ShopKart
+        </h2>
+
+        <p>
+            Get the latest deals and offers directly in your inbox.
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action=""
+    >
+
+        {% csrf_token %}
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            required
+        >
+
+        <button type="submit">
+            Subscribe
+        </button>
+
+    </form>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer class="shop-footer">
+
+    <div class="footer-brand">
+
+        <h2>
+            🛒 Shop<span>Kart</span>
+        </h2>
+
+        <p>
+            Your one-stop destination for
+            quality products at great prices.
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Quick Links
+        </h3>
+
+        <a href="{% url 'store:home' %}">
+            Home
+        </a>
+
+        <a href="#products">
+            Products
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            Cart
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Customer
+        </h3>
+
+        <a href="#">
+            Help Center
+        </a>
+
+        <a href="#">
+            Track Order
+        </a>
+
+        <a href="#">
+            Returns
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Account
+        </h3>
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'store:my_orders' %}">
+                My Orders
+            </a>
+
+            <a href="{% url 'store:logout' %}">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'store:login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'store:register' %}">
+                Register
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</footer>
+
+
+<div class="copyright">
+
+    <p>
+        © 2026 ShopKart. All rights reserved.
+    </p>
+
+</div>
+
+
+</body>
+
+</html>

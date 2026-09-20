@@ -126,6 +126,55 @@ def add_to_cart(request, product_id):
 
     return redirect("store:cart")
 
+# =========================
+# UPDATE CART
+# =========================
+
+def update_cart(request, product_id):
+
+    product = get_object_or_404(
+        Product,
+        id=product_id,
+        available=True
+    )
+
+    if request.method == "POST":
+
+        action = request.POST.get("action")
+
+        cart = request.session.get("cart", {})
+        product_id_str = str(product_id)
+
+        current_quantity = cart.get(product_id_str, 0)
+
+        if action == "increase":
+
+            if current_quantity < product.stock:
+
+                cart[product_id_str] = current_quantity + 1
+
+            else:
+
+                messages.warning(
+                    request,
+                    f"Only {product.stock} units of "
+                    f"{product.name} are available."
+                )
+
+        elif action == "decrease":
+
+            if current_quantity > 1:
+
+                cart[product_id_str] = current_quantity - 1
+
+            elif product_id_str in cart:
+
+                del cart[product_id_str]
+
+        request.session["cart"] = cart
+        request.session.modified = True
+
+    return redirect("store:cart")
 
 # =========================
 # CART

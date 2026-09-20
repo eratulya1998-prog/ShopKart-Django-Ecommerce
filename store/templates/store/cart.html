@@ -4,343 +4,617 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Shopping Cart | CodeAlpha Store</title>
+    <title>Shopping Cart | ShopKart</title>
+
+    <meta
+        name="description"
+        content="Your ShopKart shopping cart"
+    >
 
     <link
         rel="stylesheet"
         href="{% static 'css/style.css' %}"
     >
+
 </head>
 
 
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
 
-    <header class="navbar">
+<!-- =========================
+     TOP BAR
+========================== -->
 
-        <div class="logo">
-            CodeAlpha Store
-        </div>
+<div class="top-bar">
 
-        <nav>
+    <div>
+        🚚 Free Shipping on orders above ₹999
+    </div>
 
-            <a href="{% url 'store:home' %}">
-                Home
+    <div class="top-links">
+
+        <span>Help</span>
+
+        <span>|</span>
+
+        <span>Track Order</span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     NAVBAR
+========================== -->
+
+<header class="shop-navbar">
+
+    <div class="shop-logo">
+
+        <span class="logo-icon">
+            🛒
+        </span>
+
+        <span>
+            Shop<span>Kart</span>
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <form
+        method="GET"
+        action="{% url 'store:home' %}"
+        class="search-box"
+    >
+
+        <input
+            type="text"
+            name="q"
+            placeholder="Search for products, brands and more..."
+            autocomplete="off"
+        >
+
+        <button type="submit">
+            🔍
+        </button>
+
+    </form>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="shop-nav">
+
+        <a href="{% url 'store:home' %}">
+            🏠 Home
+        </a>
+
+        <a href="{% url 'store:home' %}#products">
+            📦 Products
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            🛒 Cart
+        </a>
+
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'store:my_orders' %}">
+                📋 My Orders
             </a>
 
-            <a href="{% url 'store:home' %}#products">
-                Products
+            <span class="welcome-user">
+                👤 {{ user.username }}
+            </span>
+
+            <a href="{% url 'store:logout' %}">
+                Logout
             </a>
 
-            <a href="{% url 'store:cart' %}">
-                🛒 Cart
+        {% else %}
+
+            <a href="{% url 'store:login' %}">
+                Login
             </a>
 
-
-            {% if user.is_authenticated %}
-
-                <a href="{% url 'store:my_orders' %}">
-                    📦 My Orders
-                </a>
-
-                <span class="user-name">
-                    👤 {{ user.username }}
-                </span>
-
-                <a href="{% url 'store:logout' %}">
-                    Logout
-                </a>
-
-            {% else %}
-
-                <a href="{% url 'store:login' %}">
-                    Login
-                </a>
-
-                <a href="{% url 'store:register' %}">
-                    Register
-                </a>
-
-            {% endif %}
-
-
-            <a href="/admin/">
-                Admin
+            <a href="{% url 'store:register' %}">
+                Register
             </a>
-
-        </nav>
-
-    </header>
-
-
-    <!-- =========================
-         SHOPPING CART
-    ========================== -->
-
-    <main class="cart-container">
-
-        <h1>
-            Shopping Cart
-        </h1>
-
-
-        <!-- Messages -->
-
-        {% if messages %}
-
-            {% for message in messages %}
-
-                <div class="message">
-                    {{ message }}
-                </div>
-
-            {% endfor %}
 
         {% endif %}
 
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     SHOPPING CART
+========================== -->
+
+<main class="cart-container">
+
+    <div class="cart-page-heading">
+
+        <div>
+
+            <span>
+                SHOPPING
+            </span>
+
+            <h1>
+                Your Cart
+            </h1>
+
+        </div>
 
         {% if cart_items %}
 
-            <div class="cart-layout">
+            <span>
+                {{ cart_items|length }} item{{ cart_items|length|pluralize }}
+            </span>
+
+        {% endif %}
+
+    </div>
 
 
-                <!-- =========================
-                     CART ITEMS
-                ========================== -->
+    <!-- MESSAGES -->
 
-                <section class="cart-items">
+    {% if messages %}
 
-                    {% for item in cart_items %}
+        {% for message in messages %}
 
-                        <div class="cart-item">
+            <div class="message">
+                {{ message }}
+            </div>
 
+        {% endfor %}
 
-                            <!-- Product Image -->
-
-                            <div>
-
-                                {% if item.product.image %}
-
-                                    <img
-                                        src="{{ item.product.image }}"
-                                        alt="{{ item.product.name }}"
-                                    >
-
-                                {% else %}
-
-                                    <div class="cart-image">
-                                        No Image
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
+    {% endif %}
 
 
-                            <!-- Product Information -->
-
-                            <div class="cart-product">
-
-                                <span class="category">
-                                    {{ item.product.category.name }}
-                                </span>
-
-                                <h3>
-                                    {{ item.product.name }}
-                                </h3>
-
-                                <p>
-                                    Price:
-                                    <strong>
-                                        ₹{{ item.product.price }}
-                                    </strong>
-                                </p>
-
-                                <p>
-                                    Quantity:
-                                    <strong>
-                                        {{ item.quantity }}
-                                    </strong>
-                                </p>
-
-                            </div>
+    {% if cart_items %}
 
 
-                            <!-- Subtotal -->
+        <div class="cart-layout">
 
-                            <div class="cart-subtotal">
+
+            <!-- =========================
+                 CART ITEMS
+            ========================== -->
+
+            <section class="cart-items">
+
+
+                {% for item in cart_items %}
+
+
+                    <article class="cart-item">
+
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <div class="cart-product-image">
+
+                            {% if item.product.image %}
+
+                                <img
+                                    src="{{ item.product.image }}"
+                                    alt="{{ item.product.name }}"
+                                >
+
+                            {% else %}
+
+                                <div class="cart-image-placeholder">
+
+                                    {% if "headphone" in item.product.name|lower %}
+
+                                        🎧
+
+                                    {% elif "watch" in item.product.name|lower %}
+
+                                        ⌚
+
+                                    {% elif "shoe" in item.product.name|lower %}
+
+                                        👟
+
+                                    {% elif "laptop" in item.product.name|lower %}
+
+                                        💻
+
+                                    {% elif "phone" in item.product.name|lower %}
+
+                                        📱
+
+                                    {% elif "mobile" in item.product.name|lower %}
+
+                                        📱
+
+                                    {% elif "speaker" in item.product.name|lower %}
+
+                                        🔊
+
+                                    {% else %}
+
+                                        🛍️
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PRODUCT INFORMATION -->
+
+                        <div class="cart-product">
+
+                            <span class="category">
+                                {{ item.product.category.name }}
+                            </span>
+
+                            <h3>
+                                {{ item.product.name }}
+                            </h3>
+
+                            <p class="cart-price">
+                                ₹{{ item.product.price }}
+                            </p>
+
+
+                            {% if item.product.stock <= 5 %}
+
+                                <small class="stock-warning">
+                                    Only {{ item.product.stock }} left
+                                </small>
+
+                            {% else %}
+
+                                <small class="stock-available">
+                                    In Stock
+                                </small>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="cart-quantity">
+
+                            <span>
+                                Quantity
+                            </span>
+
+                            <div class="quantity-box">
+
+                                <button
+                                    type="button"
+                                    disabled
+                                >
+                                    −
+                                </button>
 
                                 <strong>
-                                    ₹{{ item.subtotal }}
+                                    {{ item.quantity }}
                                 </strong>
 
-                                <a
-                                    href="{% url 'store:remove_from_cart' item.product.id %}"
-                                    class="remove-btn"
+                                <button
+                                    type="button"
+                                    disabled
                                 >
-                                    Remove
-                                </a>
+                                    +
+                                </button>
 
                             </div>
 
                         </div>
 
-                    {% endfor %}
 
-                </section>
+                        <!-- SUBTOTAL -->
 
+                        <div class="cart-subtotal">
 
-                <!-- =========================
-                     ORDER SUMMARY
-                ========================== -->
+                            <strong>
+                                ₹{{ item.subtotal }}
+                            </strong>
 
-                <aside class="cart-summary">
+                            <a
+                                href="{% url 'store:remove_from_cart' item.product.id %}"
+                                class="remove-btn"
+                            >
+                                🗑 Remove
+                            </a>
 
-                    <h2>
-                        Order Summary
-                    </h2>
-
-
-                    <div class="summary-row">
-
-                        <span>
-                            Items
-                        </span>
-
-                        <span>
-                            {{ cart_items|length }}
-                        </span>
-
-                    </div>
+                        </div>
 
 
-                    <div class="summary-row">
-
-                        <span>
-                            Subtotal
-                        </span>
-
-                        <span>
-                            ₹{{ total }}
-                        </span>
-
-                    </div>
+                    </article>
 
 
-                    <div class="summary-row">
-
-                        <span>
-                            Delivery
-                        </span>
-
-                        <span>
-                            FREE
-                        </span>
-
-                    </div>
+                {% endfor %}
 
 
-                    <div class="summary-total">
-
-                        <span>
-                            Total
-                        </span>
-
-                        <strong>
-                            ₹{{ total }}
-                        </strong>
-
-                    </div>
-
-
-                    <!-- Checkout -->
-
-                    {% if user.is_authenticated %}
-
-                        <a
-                            href="{% url 'store:checkout' %}"
-                            class="checkout-btn"
-                        >
-                            Proceed to Checkout
-                        </a>
-
-                    {% else %}
-
-                        <a
-                            href="{% url 'store:login' %}?next={% url 'store:checkout' %}"
-                            class="checkout-btn"
-                        >
-                            Login to Checkout
-                        </a>
-
-                    {% endif %}
-
-
-                    <a
-                        href="{% url 'store:home' %}"
-                        class="continue-shopping"
-                    >
-                        ← Continue Shopping
-                    </a>
-
-                </aside>
-
-            </div>
-
-
-        {% else %}
+            </section>
 
 
             <!-- =========================
-                 EMPTY CART
+                 ORDER SUMMARY
             ========================== -->
 
-            <div class="empty-cart">
-
-                <div class="empty-cart-icon">
-                    🛒
-                </div>
+            <aside class="cart-summary">
 
                 <h2>
-                    Your cart is empty
+                    Order Summary
                 </h2>
 
-                <p>
-                    You haven't added any products yet.
-                </p>
+
+                <div class="summary-row">
+
+                    <span>
+                        Items
+                    </span>
+
+                    <span>
+                        {{ cart_items|length }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹{{ total }}
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span class="free-delivery">
+                        FREE
+                    </span>
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₹{{ total }}
+                    </strong>
+
+                </div>
+
+
+                <!-- CHECKOUT -->
+
+                {% if user.is_authenticated %}
+
+                    <a
+                        href="{% url 'store:checkout' %}"
+                        class="checkout-btn"
+                    >
+                        Proceed to Checkout →
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'store:login' %}?next={% url 'store:checkout' %}"
+                        class="checkout-btn"
+                    >
+                        Login to Checkout →
+                    </a>
+
+                {% endif %}
+
 
                 <a
                     href="{% url 'store:home' %}"
-                    class="btn"
+                    class="continue-shopping"
                 >
-                    Continue Shopping
+                    ← Continue Shopping
                 </a>
 
+
+                <div class="cart-security">
+
+                    <div>
+                        🔒 Secure Checkout
+                    </div>
+
+                    <div>
+                        🚚 Fast Delivery
+                    </div>
+
+                    <div>
+                        ↩️ Easy Returns
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =========================
+             EMPTY CART
+        ========================== -->
+
+        <div class="empty-cart">
+
+            <div class="empty-cart-icon">
+                🛒
             </div>
+
+            <h2>
+                Your cart is empty
+            </h2>
+
+            <p>
+                You haven't added any products yet.
+            </p>
+
+            <a
+                href="{% url 'store:home' %}"
+                class="btn"
+            >
+                Start Shopping
+            </a>
+
+        </div>
+
+
+    {% endif %}
+
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer class="shop-footer">
+
+    <div class="footer-brand">
+
+        <h2>
+            🛒 Shop<span>Kart</span>
+        </h2>
+
+        <p>
+            Your one-stop destination for
+            quality products at great prices.
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Quick Links
+        </h3>
+
+        <a href="{% url 'store:home' %}">
+            Home
+        </a>
+
+        <a href="{% url 'store:home' %}#products">
+            Products
+        </a>
+
+        <a href="{% url 'store:cart' %}">
+            Cart
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Customer
+        </h3>
+
+        <a href="#">
+            Help Center
+        </a>
+
+        <a href="#">
+            Track Order
+        </a>
+
+        <a href="#">
+            Returns
+        </a>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Account
+        </h3>
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'store:my_orders' %}">
+                My Orders
+            </a>
+
+            <a href="{% url 'store:logout' %}">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'store:login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'store:register' %}">
+                Register
+            </a>
 
         {% endif %}
 
-    </main>
+    </div>
+
+</footer>
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+<div class="copyright">
 
-    <footer>
+    <p>
+        © 2026 ShopKart. All rights reserved.
+    </p>
 
-        <p>
-            © 2026 CodeAlpha Store. All rights reserved.
-        </p>
-
-    </footer>
+</div>
 
 
 </body>

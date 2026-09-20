@@ -24,6 +24,11 @@ urlpatterns = [
         views.add_to_cart,
         name="add_to_cart"
     ),
+    path(
+    "cart/update/<int:product_id>/",
+    views.update_cart,
+    name="update_cart"
+    ),
 
     path(
         "cart/remove/<int:product_id>/",
@@ -68,4 +73,5 @@ urlpatterns = [
         views.my_orders,
         name="my_orders"
     ),
+
 ]
